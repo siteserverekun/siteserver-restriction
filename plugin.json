@@ -1,0 +1,17 @@
+{
+  "name": "restriction",
+  "DisplayName": "后台访问限制",
+  "Description": "使用完整的图片投票解决方案来获得您需要的答案。",
+  "Publisher": "siteserver",
+  "Version": "1.0.0",
+  "Website": "http://www.siteserver.cn",
+  "Disabled": false,
+  "ExecuteFileName": "bin/SiteServer.Restriction.dll",
+  "icon": "logo.svg",
+  "includes": [
+    "admin/",
+    "logo.svg",
+    "bin/SiteServer.Restriction.dll",
+    "plugin.json"
+  ]
+}
