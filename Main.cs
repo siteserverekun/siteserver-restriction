@@ -1,20 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 using SiteServer.Plugin;
 using SiteServer.Plugin.Hooks;
 
 namespace SiteServer.Restriction
 {
-    public class Main : IPlugin, IRestful, IMenu
+    public class Main : PageAdmin, IPlugin, IMenu
     {
-        private Config _config;
+        private static Config _config;
 
-        public static IPublicApi Api { get; private set; }
+        private static IPublicApi Api { get; set; }
+
+        public static void SetConfig(Config config)
+        {
+            _config = config;
+            Api.SetConfig(nameof(Config), config);
+        }
+
+        public static Config GetConfig()
+        {
+            return _config;
+        }
 
         public void Active(PluginContext context)
         {
             Api = context.Api;
-            _config = Api.GetConfig<Config>(nameof(Config));
+            _config = Api.GetConfig<Config>(nameof(Config)) ?? new Config
+            {
+                RestrictionType = ERestrictionTypeUtils.GetValue(ERestrictionType.None),
+                BlackList = string.Empty,
+                WhiteList = string.Empty
+            };
+            if (_config.BlackList == null)
+            {
+                _config.BlackList = string.Empty;
+            }
+            if (_config.WhiteList == null)
+            {
+                _config.WhiteList = string.Empty;
+            }
         }
 
         public void Deactive(PluginContext context)
@@ -22,39 +47,15 @@ namespace SiteServer.Restriction
 
         }
 
-        public object Get(IRequestContext context, string name, int id)
+        public override void OnPreLoad(EventArgs e)
         {
-            return _config;
-        }
+            base.OnPreLoad(e);
 
-        public object Put(IRequestContext context, string name, int id)
-        {
-            throw new NotImplementedException();
-        }
+            if (RestrictionManager.IsVisitAllowed(_config)) return;
 
-        public object Delete(IRequestContext context, string name, int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object Patch(IRequestContext context, string name, int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object Post(IRequestContext context, string name, int id)
-        {
-            var config = new Config
-            {
-                RestrictionType = ERestrictionTypeUtils.GetValue(ERestrictionTypeUtils.GetEnumType(context.GetPostString("restrictionType"))),
-                BlackList = context.GetPostString("blackList"),
-                WhiteList = context.GetPostString("whiteList")
-            };
-
-            Api.SetConfig(nameof(Config), config);
-            _config = config;
-
-            return config;
+            HttpContext.Current.Response.Write("<h1>禁止访问</h1>");
+            HttpContext.Current.Response.Write($"<p>IP地址：{RestrictionManager.GetIpAddress()}<br />需要访问后台请与网站管理员联系开通相关权限.</p>");
+            HttpContext.Current.Response.End();
         }
 
         public PluginMenu GetTopMenu()

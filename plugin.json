@@ -1,7 +1,7 @@
 {
   "name": "restriction",
   "DisplayName": "后台访问限制",
-  "Description": "使用完整的图片投票解决方案来获得您需要的答案。",
+  "Description": "设置后台访问IP地址黑名单以及白名单，增强CMS系统后台安全性。",
   "Publisher": "siteserver",
   "Version": "1.0.0",
   "Website": "http://www.siteserver.cn",
@@ -9,9 +9,10 @@
   "ExecuteFileName": "bin/SiteServer.Restriction.dll",
   "icon": "logo.svg",
   "includes": [
-    "admin/",
+    "assets/",
     "logo.svg",
     "bin/SiteServer.Restriction.dll",
-    "plugin.json"
+    "plugin.json",
+    "README.json"
   ]
 }
