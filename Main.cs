@@ -10,7 +10,9 @@ namespace SiteServer.Restriction
     {
         private static Config _config;
 
-        private static IPublicApi Api { get; set; }
+        public const string Permission = "";
+
+        public static IPublicApi Api { get; set; }
 
         public static void SetConfig(Config config)
         {

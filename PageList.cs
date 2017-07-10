@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -20,6 +21,13 @@ namespace SiteServer.Restriction
 
         public void Page_Load(object sender, EventArgs e)
         {
+            if (!Main.Api.IsAuthorized())
+            {
+                HttpContext.Current.Response.Write("<h1>未授权访问</h1>");
+                HttpContext.Current.Response.End();
+                return;
+            }
+
             _type = Request.QueryString["type"];
             _config = Main.GetConfig();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -13,6 +14,13 @@ namespace SiteServer.Restriction
 
         public void Page_Load(object sender, EventArgs e)
         {
+            if (!Main.Api.IsAuthorized())
+            {
+                HttpContext.Current.Response.Write("<h1>未授权访问</h1>");
+                HttpContext.Current.Response.End();
+                return;
+            }
+
             _config = Main.GetConfig();
 
             if (!IsPostBack)
