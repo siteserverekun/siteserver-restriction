@@ -6,7 +6,7 @@ using SiteServer.Plugin.Hooks;
 
 namespace SiteServer.Restriction
 {
-    public class Main : PageAdmin, IPlugin, IMenu
+    public class Main : PluginBase, IMenu
     {
         private static Config _config;
 
@@ -17,7 +17,7 @@ namespace SiteServer.Restriction
         public static void SetConfig(Config config)
         {
             _config = config;
-            Api.SetConfig(nameof(Config), config);
+            Api.SetGlobalConfig(nameof(Config), config);
         }
 
         public static Config GetConfig()
@@ -25,10 +25,10 @@ namespace SiteServer.Restriction
             return _config;
         }
 
-        public void Active(PluginContext context)
+        public override void Active(PluginContext context)
         {
             Api = context.Api;
-            _config = Api.GetConfig<Config>(nameof(Config)) ?? new Config
+            _config = Api.GetGlobalConfig<Config>(nameof(Config)) ?? new Config
             {
                 RestrictionType = ERestrictionTypeUtils.GetValue(ERestrictionType.None),
                 BlackList = string.Empty,
@@ -44,11 +44,6 @@ namespace SiteServer.Restriction
             }
         }
 
-        public void Deactive(PluginContext context)
-        {
-
-        }
-
         public override void OnPreLoad(EventArgs e)
         {
             base.OnPreLoad(e);
@@ -60,7 +55,7 @@ namespace SiteServer.Restriction
             HttpContext.Current.Response.End();
         }
 
-        public PluginMenu GetTopMenu()
+        public override PluginMenu GetTopMenu()
         {
             return new PluginMenu
             {
@@ -84,11 +79,6 @@ namespace SiteServer.Restriction
                     }
                 }
             };
-        }
-
-        public PluginMenu GetSiteMenu(int siteId)
-        {
-            return null;
         }
     }
 }
